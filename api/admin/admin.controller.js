@@ -1,18 +1,16 @@
 const {
-  create,
-  getUserByUserEmail,
-  getUserByUserId,
-  getUsers,
-  updateUser,
-  deleteUser
-} = require("./user.service");
-const { hashSync, genSaltSync, compareSync } = require("bcrypt");
-const { sign } = require("jsonwebtoken");
-
-const getColumnCctv = require("./user.service").getColumnLocationCctv;
+    create,
+    getAdminByAdminEmail,
+    getAdminByAdminId,
+    getAdmins,
+    updateAdmin,
+    deleteAdmin
+  } = require("./admin.service");
+  const { hashSync, genSaltSync, compareSync } = require("bcrypt");
+  const { sign } = require("jsonwebtoken");
   
   module.exports = {
-    createUser: (req, res) => {
+    createAdmin: (req, res) => {
       const body = req.body;
       const salt = genSaltSync(10);
       body.password = hashSync(body.password, salt);
@@ -33,7 +31,7 @@ const getColumnCctv = require("./user.service").getColumnLocationCctv;
 
     login: (req, res) => {
       const body = req.body;
-      getUserByUserEmail(body.email, (err, results) => {
+      getAdminByAdminEmail(body.email, (err, results) => {
         if (err) {
           console.log(err);
         }
@@ -63,9 +61,9 @@ const getColumnCctv = require("./user.service").getColumnLocationCctv;
       });
     },
 
-    getUserByUserId: (req, res) => {
+    getAdminByAdminId: (req, res) => {
       const id = req.params.id;
-      getUserByUserId(id, (err, results) => {
+      getAdminByAdmimId(id, (err, results) => {
         if (err) {
           console.log(err);
           return;
@@ -84,8 +82,8 @@ const getColumnCctv = require("./user.service").getColumnLocationCctv;
       });
     },
 
-    getUsers: (req, res) => {
-      getUsers((err, results) => {
+    getAdmins: (req, res) => {
+      getAdmins((err, results) => {
         if (err) {
           console.log(err);
           return;
@@ -97,24 +95,11 @@ const getColumnCctv = require("./user.service").getColumnLocationCctv;
       });
     },
 
-    getColumnCctvOptions: (req, res) => {
-      getColumnCctvOptions((err, results) => {
-        if (err) {
-          console.log(err);
-          return;
-        }
-        return res.json({
-          success: 1,
-          data: results
-        });
-      });
-    },
-
-    updateUsers: (req, res) => {
+    updateAdmin: (req, res) => {
       const body = req.body;
       const salt = genSaltSync(10);
       body.password = hashSync(body.password, salt);
-      updateUser(body, (err, results) => {
+      updateAdmin(body, (err, results) => {
         if (err) {
           console.log(err);
           return;
@@ -125,10 +110,10 @@ const getColumnCctv = require("./user.service").getColumnLocationCctv;
         });
       });
     },
-
-    deleteUser: (req, res) => {
+    
+    deleteAdmin: (req, res) => {
       const data = req.body;
-      deleteUser(data, (err, results) => {
+      deleteAdmin(data, (err, results) => {
         if (err) {
           console.log(err);
           return;
@@ -141,7 +126,7 @@ const getColumnCctv = require("./user.service").getColumnLocationCctv;
         }
         return res.json({
           success: 1,
-          message: "User deleted successfully"
+          message: "Admin deleted successfully"
         });
       });
     }

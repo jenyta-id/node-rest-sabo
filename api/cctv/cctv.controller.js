@@ -1,4 +1,5 @@
 const { create, getCctvByCctvId, getCctvs, updateCctv, deleteCctv } = require("./cctv.service");
+const getUserByCctvLocation = require("./cctv.service").getUserByCctvLocation;
 
 module.exports = {
   createCctv: (req, res) => {
@@ -17,6 +18,7 @@ module.exports = {
       });
     });
   },
+
   getCctvByCctvId: (req, res) => {
     const id = req.params.id;
     getCctvByCctvId(id, (err, results) => {
@@ -36,6 +38,7 @@ module.exports = {
       });
     });
   },
+
   getCctvs: (req, res) => {
     getCctvs((err, results) => {
       if (err) {
@@ -48,6 +51,21 @@ module.exports = {
       });
     });
   },
+
+  getUserByCctvLocation: (req, res) => {
+    const location = req.params.location;
+    getUserByCctvLocation(location, (err, results) => {
+      if (err) {
+        console.log(err);
+        return;
+      }
+      return res.json({
+        success: 1,
+        data: results
+      });
+    });
+  },  
+
   updateCctv: (req, res) => {
     const body = req.body;
     updateCctv(body, (err, results) => {
@@ -61,6 +79,7 @@ module.exports = {
       });
     });
   },
+  
   deleteCctv: (req, res) => {
     const data = req.body;
     deleteCctv(data, (err, results) => {
@@ -71,7 +90,7 @@ module.exports = {
       if (!results) {
         return res.json({
           success: 0,
-          message: "Record not found"
+          message: "Operation Success"
         });
       }
       return res.json({

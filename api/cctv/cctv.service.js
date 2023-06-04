@@ -1,10 +1,15 @@
 const pool = require("../../config/database");
+const mysql = require("mysql2");
 
 module.exports = {
   create: (data, callback) => {
+    const latitude = data.latitude;
+    const longitude = data.longitude;
+    const coordinates = `POINT(${longitude} ${latitude})`;
+
     pool.query(
-      `INSERT INTO cctv (name, location) VALUES (?,?)`,
-      [data.name, data.location],
+      `INSERT INTO cctv (name, location, coordinates, used, protocol, ip, remark) VALUES (?,?,?,?,?,?,?)`,
+      [data.name, data.location, coordinates, data.used, data.protocol, data.ip, data.remark],
       (error, results, fields) => {
         if (error) {
           return callback(error);
@@ -13,6 +18,7 @@ module.exports = {
       }
     );
   },
+
   getCctvByCctvId: (id, callback) => {
     pool.query(
       `SELECT * FROM cctv WHERE id = ?`,
@@ -25,18 +31,11 @@ module.exports = {
       }
     );
   },
-  getCctvs: callback => {
-    pool.query(`SELECT * FROM cctv`, [], (error, results, fields) => {
-      if (error) {
-        return callback(error);
-      }
-      return callback(null, results);
-    });
-  },
-  updateCctv: (data, callback) => {
+  
+  getUserByCctvLocation: (location, callback) => {
     pool.query(
-      `UPDATE cctv SET name=?, location=? WHERE id=?`,
-      [data.name, data.location, data.id],
+      `SELECT * FROM users WHERE location = ?`,
+      [location],
       (error, results, fields) => {
         if (error) {
           return callback(error);
@@ -45,6 +44,29 @@ module.exports = {
       }
     );
   },
+
+  getCctvs: callback => {
+    pool.query(`SELECT * FROM cctv`, [], (error, results, fields) => {
+      if (error) {
+        return callback(error);
+      }
+      return callback(null, results);
+    });
+  },
+
+  updateCctv: (data, callback) => {
+    pool.query(
+      `UPDATE cctv SET name=?, location=?, latitude=?, longitude=?, used=?, protocol=?, ip=?, remark=? WHERE id=?`,
+      [data.name, data.location, data.latitude, data.longitude, data.used, data.protocol, data.ip, data.remark, data.id],
+      (error, results, fields) => {
+        if (error) {
+          return callback(error);
+        }
+        return callback(null, results);
+      }
+    );
+  },
+
   deleteCctv: (data, callback) => {
     pool.query(
       `DELETE FROM cctv WHERE id=?`,
